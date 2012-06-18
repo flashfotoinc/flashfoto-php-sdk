@@ -37,7 +37,7 @@ if(!empty($_POST)  && empty($error)) {
 		try{
 			$result = $FlashFotoAPI->add($post_data['api_post_data'] ? $post_data['api_post_data'] : null, $post_data['api_params'] ? $post_data['api_params'] : null);
 		} catch(Exception $e) {
-			$result = $e;
+			$result = 'Code: ' . $e->getCode() . ' Error: ' . $e->getMessage();
 		}
 	} else {
 		$error = $post_data['error'];
