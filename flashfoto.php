@@ -44,7 +44,7 @@ class FlashFoto {
 	 * @return string|array JSON decoded array or string if $decode is false
 	 * @throws FlashFotoException
 	 */
-	protected function __make_request($url, $method = 'GET', $post_data = null, $decode = true) {
+	protected function __make_request($url, $method = 'GET', $post_data = null, $decode = true, $filename = null, $mimetype = null) {
 		//Reset last response data
 		$this->last_response = $this->last_response_info = null;
 
@@ -63,13 +63,20 @@ class FlashFoto {
 		if($post_data) {
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
 		}
-		if($method == "GET") {
-			curl_setopt($ch, CURLOPT_HTTPGET, true);
-			curl_setopt($ch, CURLOPT_POST, false);
-		}
-		if($method == "POST") {
-			curl_setopt($ch, CURLOPT_HTTPGET, false);
-			curl_setopt($ch, CURLOPT_POST, true);
+		switch($method) {
+			case 'GET':
+				curl_setopt($ch, CURLOPT_HTTPGET, true);
+				curl_setopt($ch, CURLOPT_POST, false);
+				break;
+			case 'POST':
+				curl_setopt($ch, CURLOPT_HTTPGET, false);
+				curl_setopt($ch, CURLOPT_POST, true);
+				break;
+			case 'FILE':
+				curl_setopt($ch, CURLOPT_POSTFIELDS, array('file' => '@'.$filename.';type='.$mimetype));
+				curl_setopt($ch, CURLOPT_HTTPGET, false);
+				//For multipart, CURLOPT_POST is NOT set as true or false
+				break;
 		}
 
 		$this->last_response = $result = curl_exec($ch);
@@ -139,6 +146,11 @@ class FlashFoto {
 			$result = $this->__make_request($url);
 		}
 		return $result;
+	}
+
+	function addByFile($filename, $mimetype, $params=null) {
+		$url = $this->getUrlWithParamString("add", $params);
+		return $this->__make_request($url, "FILE", null, true, $filename, $mimetype);
 	}
 
 	/**
