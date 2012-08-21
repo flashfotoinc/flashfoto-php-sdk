@@ -229,10 +229,12 @@ class FlashFoto {
 	/**
 	 * This method processes the specified image, and detects the face and hair lines of the primary face in the image.
 	 * @param int $image_id
+	 * @param array $params
 	 * @return array JSON response array
 	 */
-	function segment($image_id) {
-		return $this->__make_request('segment/' . $image_id);
+	function segment($image_id, $params=null) {
+		$url = $this->getUrlWithParamString("segment/".$image_id, $params);
+		return $this->__make_request($url);
 	}
 
 	/**
@@ -306,6 +308,18 @@ class FlashFoto {
 	function merge($merge_data, $params=null) {
 		$url = $this->getUrlWithParamString('merge', $params);
 		return $this->__make_request($url, $method='POST', json_encode($merge_data));
+	}
+
+	/**
+	 * This method returns data points for a face in an image. The data points describe the following regions: eyebrows,
+	 * eyes, nose, mouth, and chin.
+	 * @param int $image_id
+	 * @param array $params
+	 * @return array JSON response array
+	 */
+	function facepoints($image_id, $params=null){
+		$url = $this->getUrlWithParamString("facepoints/".$image_id, $params);
+		return $this->__make_request($url);
 	}
 
 	/**
