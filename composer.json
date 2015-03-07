@@ -1,0 +1,9 @@
+{
+  "name": "flashfoto/flashfoto-php-sdk",
+  "description": "FlashFoto PHP SDK",
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.x-dev"
+    }
+  }
+}
